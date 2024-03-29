@@ -104,7 +104,7 @@ blacklisted["alpine-3.4.10"]=1
 blacklisted["alpine-3.5.10"]=1
 
 for dir in \
-    alpine {buster,bullseye,bookworm,bionic,focal,jammy}{/slim,} \
+    alpine {buster,bullseye,bookworm,focal,jammy}{/slim,} \
 ; do
     variant="$(basename "$dir")"
 
