@@ -69,10 +69,10 @@ getArches() {
 getArches
 
 cat <<-EOH
-# this file is generated via https://github.com/vicamo/docker-pyenv/blob/$(fileCommit "$self")/$self
+# this file is generated via https://github.com/thepushkarp/docker-pyenv/blob/$(fileCommit "$self")/$self
 
-Maintainers: You-Sheng Yang <vicamo@gmail.com> (@vicamo)
-GitRepo: https://github.com/vicamo/docker-pyenv.git
+Maintainers: Pushkar Patel <git@thepushkarp.com> (@thepushkarp)
+GitRepo: https://github.com/thepushkarp/docker-pyenv.git
 EOH
 
 # prints "$2$1$3$1...$N"

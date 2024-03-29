@@ -24,7 +24,7 @@ EOF
 }
 
 versions=(
-    $(docker run vicamo/pyenv sh -c " \
+    $(docker run thepushkarp/pyenv sh -c " \
         pyenv update >/dev/null 2>&1; \
         for prefix in \$(pyenv install --list | \
             grep -e '^  [[:digit:]]\(\.[[:digit:]]\+\)\+$' | \

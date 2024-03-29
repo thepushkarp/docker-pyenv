@@ -24,11 +24,11 @@ jobs:
         run: |
           git clone --depth 1 https://github.com/docker-library/bashbrew.git -b master ~/bashbrew
           # Force override generated docker image name to "pyenv"
-          strategy="$(env GITHUB_REPOSITORY=vicamo/pyenv ~/bashbrew/scripts/github-actions/generate.sh)"
+          strategy="$(env GITHUB_REPOSITORY=thepushkarp/pyenv ~/bashbrew/scripts/github-actions/generate.sh)"
           jq . <<<"$strategy" # sanity check / debugging aid
           echo "STRATEGY=$strategy" >> $GITHUB_OUTPUT
         env:
-          BASHBREW_NAMESPACE: vicamo
+          BASHBREW_NAMESPACE: thepushkarp
 
   test:
     needs: generate-jobs
@@ -58,7 +58,7 @@ jobs:
       - name: Publish
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
         run: |
-          for tag in $(docker images --filter=reference='vicamo/pyenv:*' \
+          for tag in $(docker images --filter=reference='thepushkarp/pyenv:*' \
               --format '{{.Repository}}:{{.Tag}}'); do
             docker push ${tag};
           done
