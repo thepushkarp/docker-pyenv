@@ -58,7 +58,6 @@ RUN set -eux; \
         libffi-dev \
         libgdbm-compat-dev \
         libgdbm-dev \
-        libmpdec-dev \
         liblzma-dev \
         libncursesw5-dev \
         $(apt-cache show libncurses-dev >/dev/null 2>&1 && echo libncurses-dev || true) \
