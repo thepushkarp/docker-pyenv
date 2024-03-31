@@ -21,12 +21,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: docker-library/bashbrew@HEAD
-
       - id: generate-jobs
         name: Generate Jobs
         run: |
-          strategy="$("env GITHUB_REPOSITORY=thepushkarp/pyenv $BASHBREW_SCRIPTS/github-actions/generate.sh")"
+          git clone --depth 1 https://github.com/docker-library/bashbrew.git -b master ~/bashbrew
+          # Force override generated docker image name to "pyenv"
+          strategy="$(env GITHUB_REPOSITORY=thepushkarp/pyenv ~/bashbrew/scripts/github-actions/generate.sh)"
 
           EOF="EOF-$RANDOM-$RANDOM-$RANDOM"
           echo "strategy<<$EOF" >> "$GITHUB_OUTPUT"
