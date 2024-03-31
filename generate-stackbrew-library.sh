@@ -2,7 +2,7 @@
 set -Eeuo pipefail
 #set -x
 
-defaultDebianSuite='bullseye'
+defaultDebianSuite='bookworm'
 declare -A debianSuites=(
     #[3.10]='bullseye'
 )
