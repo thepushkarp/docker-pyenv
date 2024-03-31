@@ -4,7 +4,7 @@
 # PLEASE DO NOT EDIT IT DIRECTLY.
 #
 
-FROM %%BASE_IMAGE%% AS base
+FROM alpine:latest AS base
 
 ENV PYENV_ROOT="/opt/pyenv"
 ENV PYENV_SHELL="bash"
@@ -66,7 +66,7 @@ RUN set -eux; \
 
 FROM builder AS build-all
 
-ARG PYENV_VERSIONS="%%PYENV_VERSIONS%%"
+ARG PYENV_VERSIONS="3.8.19 3.9.19 3.10.14 3.11.8 3.12.2"
 ARG ALLOW_FAILURES=
 
 RUN set -eux; \
