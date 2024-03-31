@@ -2,7 +2,7 @@
 set -Eeuo pipefail
 #set -x
 
-defaultDebianSuite='bullseye'
+defaultDebianSuite='bookworm'
 declare -A debianSuites=(
     #[3.10]='bullseye'
 )
@@ -65,6 +65,17 @@ getArches() {
             | sort -u \
             | xargs bashbrew cat --format '[{{ .RepoName }}:{{ .TagName }}]="{{ join " " .TagEntry.Architectures }}"'
     ) )"
+    # we will print some info about the parent images
+    for parentRepo in $(awk '{ print $2 }' < <(for parentRepo in "${!parentRepoToArches[@]}"; do echo "$parentRepo"; done) | sort -u); do
+        parentRepoDir="${parentRepo%%:*}"
+        parentRepoTag="${parentRepo#*:}"
+        parentRepoCommit="$(dirCommit "$parentRepoDir")"
+        parentRepoArches="${parentRepoToArches[$parentRepo]}"
+        echo
+        echo "Parent: $parentRepoDir:$parentRepoTag"
+        echo "ParentCommit: $parentRepoCommit"
+        echo "ParentArches: $parentRepoArches"
+    done
 }
 getArches
 
