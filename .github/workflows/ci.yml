@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        arch: [amd64, arm64]  # Define a matrix for architectures
+        arch: [amd64, arm64v8]
     outputs:
       STRATEGY: ${{ steps.generate-jobs.outputs.STRATEGY }}
     steps:
