@@ -34,7 +34,7 @@ jobs:
           echo "$EOF" >> "$GITHUB_OUTPUT"
         env:
           BASHBREW_NAMESPACE: thepushkarp
-          BASHBREW_ARCH: 'amd64 arm64'
+          BASHBREW_ARCH: amd64, arm64
 
   build-and-push:
     needs: generate-jobs
