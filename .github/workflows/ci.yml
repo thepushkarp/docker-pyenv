@@ -45,8 +45,6 @@ jobs:
     runs-on: 'ubuntu-latest'
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
       - name: Prepare Environment
         run: ${{ matrix.runs.prepare }}
       - name: Pull Dependencies
@@ -80,8 +78,25 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+      - name: Install Docker
+        run: |
+          brew install docker
+          # The Docker application needs to be started to run the Docker daemon.
+          # This command tries to open Docker.app but does not wait for it to finish.
+          # You may need to handle Docker startup in a more robust way.
+          colima start
+
+      # It might be necessary to wait for Docker to be ready.
+      # This is a simplistic approach; consider a more robust wait/check mechanism.
+      - name: Wait for Docker to start
+        run: |
+          for i in {1..30}; do # wait up to 30 seconds
+            if docker info; then
+              break
+            fi
+            echo "Waiting for Docker to start..."
+            sleep 1
+          done
       - name: Prepare Environment
         run: ${{ matrix.runs.prepare }}
       - name: Pull Dependencies
