@@ -41,7 +41,7 @@ jobs:
   build-and-push-amd64:
     needs: generate-jobs
     strategy: ${{ fromJson(needs.generate-jobs.outputs.strategy_amd64) }}
-    name: ${{ matrix.name }}
+    name: ${{ matrix.name }}-amd64
     runs-on: 'ubuntu-latest'
     steps:
       - uses: actions/checkout@v4
@@ -76,7 +76,7 @@ jobs:
   build-and-push-arm64v8:
     needs: generate-jobs
     strategy: ${{ fromJson(needs.generate-jobs.outputs.strategy_arm64v8) }}
-    name: ${{ matrix.name }}
+    name: ${{ matrix.name }}-arm64v8
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
