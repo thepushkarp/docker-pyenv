@@ -23,7 +23,6 @@ jobs:
       strategy_arm64v8: ${{ steps.generate-jobs.outputs.strategy_arm64v8 }}
     steps:
       - uses: actions/checkout@v4
-
       - id: generate-jobs
         name: Generate Jobs for ${{ matrix.arch }}
         run: |
@@ -37,13 +36,13 @@ jobs:
           echo "$EOF" >> $GITHUB_OUTPUT
         env:
           BASHBREW_NAMESPACE: thepushkarp
-          BASHBREW_ARCH: ${{ matrix.arch }}  # Use matrix value
+          BASHBREW_ARCH: ${{ matrix.arch }}
 
   build-and-push-amd64:
     needs: generate-jobs
     strategy: ${{ fromJson(needs.generate-jobs.outputs.strategy_amd64) }}
     name: ${{ matrix.name }}
-    runs-on: ${{ matrix.os }}
+    runs-on: 'ubuntu-latest'
     steps:
       - uses: actions/checkout@v4
       - name: Prepare Environment
@@ -76,7 +75,7 @@ jobs:
     needs: generate-jobs
     strategy: ${{ fromJson(needs.generate-jobs.outputs.strategy_arm64v8) }}
     name: ${{ matrix.name }}
-    runs-on: ${{ matrix.os }}
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
       - name: Prepare Environment
