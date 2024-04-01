@@ -19,8 +19,8 @@ jobs:
       matrix:
         arch: [amd64, arm64v8]
     outputs:
-      STRATEGY_AMD64: ${{ steps.generate-jobs.outputs.STRATEGY_AMD64 }}
-      STRATEGY_ARM64V8: ${{ steps.generate-jobs.outputs.STRATEGY_ARM64V8 }}
+      strategy_amd64: ${{ steps.generate-jobs.outputs.strategy_amd64 }}
+      strategy_arm64v8: ${{ steps.generate-jobs.outputs.strategy_arm64v8 }}
     steps:
       - uses: actions/checkout@v4
 
@@ -32,14 +32,14 @@ jobs:
           strategy="$(env GITHUB_REPOSITORY=thepushkarp/pyenv ~/bashbrew/scripts/github-actions/generate.sh)"
 
           jq . <<<"$strategy" # sanity check / debugging aid
-          echo "STRATEGY_${{ matrix.arch^^ }}='$strategy'" >> $GITHUB_ENV
+          echo "strategy_${{ matrix.arch }}='$strategy'" >> $GITHUB_OUTPUT
         env:
           BASHBREW_NAMESPACE: thepushkarp
           BASHBREW_ARCH: ${{ matrix.arch }}  # Use matrix value
 
   build-and-push-amd64:
     needs: generate-jobs
-    strategy: ${{ fromJson(needs.generate-jobs.outputs.STRATEGY_AMD64) }}
+    strategy: ${{ fromJson(needs.generate-jobs.outputs.strategy_amd64) }}
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
     steps:
@@ -72,7 +72,7 @@ jobs:
 
   build-and-push-arm64v8:
     needs: generate-jobs
-    strategy: ${{ fromJson(needs.generate-jobs.outputs.STRATEGY_ARM64V8) }}
+    strategy: ${{ fromJson(needs.generate-jobs.outputs.strategy_arm64v8) }}
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
     steps:
