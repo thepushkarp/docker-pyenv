@@ -18,7 +18,7 @@ jobs:
     name: Generate Jobs
     runs-on: ubuntu-latest
     outputs:
-      STRATEGY: ${{ steps.generate-jobs.outputs.STRATEGY }}
+      strategy: ${{ steps.generate-jobs.outputs.strategy }}
     steps:
       - uses: actions/checkout@v4
       - id: generate-jobs
@@ -28,13 +28,16 @@ jobs:
           # Force override generated docker image name to "pyenv"
           strategy="$(env GITHUB_REPOSITORY=thepushkarp/pyenv ~/bashbrew/scripts/github-actions/generate.sh)"
 
-          echo "STRATEGY=${strategy}" >> $GITHUB_OUTPUT
+          EOF="EOF-$RANDOM-$RANDOM-$RANDOM"
+          echo "strategy<<$EOF" >> "$GITHUB_OUTPUT"
+          jq <<<"$strategy" . | tee -a "$GITHUB_OUTPUT"
+          echo "$EOF" >> "$GITHUB_OUTPUT"
         env:
           BASHBREW_NAMESPACE: thepushkarp
 
   build-and-push-amd64:
     needs: generate-jobs
-    strategy: ${{ fromJson(needs.generate-jobs.outputs.STRATEGY) }}
+    strategy: ${{ fromJson(needs.generate-jobs.outputs.strategy) }}
     name: ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
     steps:
