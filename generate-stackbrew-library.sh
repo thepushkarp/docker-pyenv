@@ -138,8 +138,8 @@ for dir in \
         echo "SharedTags: $(join ', ' "${sharedTags[@]}")"
     fi
     cat <<-EOE
-    Architectures: $(join ', ' $variantArches)
-    GitCommit: $commit
-    Directory: $dir
-    EOE
+	Architectures: $(join ', ' $variantArches)
+	GitCommit: $commit
+	Directory: $dir
+	EOE
 done

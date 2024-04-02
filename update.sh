@@ -38,6 +38,10 @@ versions=(
 
 versions=($(echo "${versions[@]}" | tr -d '\r'))
 
+eol_versions=$(curl -s https://endoflife.date/api/python.json | jq -r '.[] | select(.eol < $date) | .cycle' --arg date "$(date +%Y-%m-%d) | sort -u -V")
+
+# TODO: Remove EOL versions
+
 declare -A blacklisted
 
 for dir in \
