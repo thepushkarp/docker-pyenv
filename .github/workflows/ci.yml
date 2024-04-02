@@ -28,10 +28,7 @@ jobs:
           # Force override generated docker image name to "pyenv"
           strategy="$(env GITHUB_REPOSITORY=thepushkarp/pyenv ~/bashbrew/scripts/github-actions/generate.sh)"
 
-          EOF="EOF-$RANDOM-$RANDOM-$RANDOM"
-          echo "STRATEGY<<$EOF" >> $GITHUB_OUTPUT
-          jq <<<"$strategy" . | tee -a $GITHUB_OUTPUT
-          echo "$EOF" >> $GITHUB_OUTPUT
+          echo "STRATEGY=${strategy}" >> $GITHUB_OUTPUT
         env:
           BASHBREW_NAMESPACE: thepushkarp
 
