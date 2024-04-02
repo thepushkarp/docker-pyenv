@@ -23,46 +23,11 @@ generated_warning() {
 EOF
 }
 
-# Get the machine hardware name
-architecture=$(uname -m)
-
-# Map the architecture to Docker platform codes
-case "$architecture" in
-    x86_64)
-        docker_platform="linux/amd64"
-        ;;
-    i386 | i486 | i586 | i686)
-        docker_platform="linux/386"
-        ;;
-    armv6l)
-        docker_platform="linux/arm/v6"
-        ;;
-    armv7l)
-        docker_platform="linux/arm/v7"
-        ;;
-    aarch64 | arm64 | armv8l)
-        docker_platform="linux/arm64"
-        ;;
-    ppc64)
-        docker_platform="linux/ppc64"
-        ;;
-    ppc64le)
-        docker_platform="linux/ppc64le"
-        ;;
-    s390x)
-        docker_platform="linux/s390x"
-        ;;
-    *)
-        echo "Unsupported architecture: $architecture"
-        exit 1
-        ;;
-esac
-
 versions=(
-    $(docker run --platform $docker_platform thepushkarp/pyenv sh -c " \
+    $(docker run -it thepushkarp/pyenv sh -c " \
         pyenv update >/dev/null 2>&1; \
         for prefix in \$(pyenv install --list | \
-            grep -e '^  [[:digit:]]\(\.[[:digit:]]\+\)\+$' | \
+            grep -e '^  3\(\.[[:digit:]]\+\)\+$' | \
             cut -d. -f1,2 | \
             sort -u -V) \
         ; do \
@@ -71,18 +36,7 @@ versions=(
     )
 )
 
-versions=(
-    $(docker run thepushkarp/pyenv sh -c " \
-        pyenv update >/dev/null 2>&1; \
-        for prefix in \$(pyenv install --list | \
-            grep -e '^  [[:digit:]]\(\.[[:digit:]]\+\)\+$' | \
-            cut -d. -f1,2 | \
-            sort -u -V) \
-        ; do \
-            pyenv latest --known \$prefix; \
-        done | sort -u -V"
-    )
-)
+versions=($(echo "${versions[@]}" | tr -d '\r'))
 
 declare -A blacklisted
 
@@ -91,11 +45,13 @@ for dir in \
 ; do
     variant="$(basename "$dir")"
 
+    echo "Updating $dir..."
+
     [ -d "$dir" ] || continue
 
     case "$variant" in
-    slim) suite=$(basename "$(dirname "$dir")") ;;
-    *)    suite="$variant" ;;
+        slim) suite=$(basename "$(dirname "$dir")") ;;
+        *)    suite="$variant" ;;
     esac
     base="$(< "$dir/base")"
     template="$(basename "$(readlink -f "$dir/template")")"
@@ -113,9 +69,14 @@ for dir in \
         done
     fi
 
-    sed -ri \
-        -e "s!%%BASE_IMAGE%%!${base}!" \
-        -e "s!%%PYENV_VERSIONS%%!${available[*]}!" \
-        ${allow_failures:+-e "s!^ARG ALLOW_FAILURES=.*!ARG ALLOW_FAILURES=true!"} \
-        "$dir/Dockerfile"
+    allow_failures_conditional_script=""
+    if [ -n "${allow_failures}" ]; then
+        allow_failures_conditional_script="-e s!^ARG ALLOW_FAILURES=.*!ARG ALLOW_FAILURES=true!"
+    fi
+
+    sed -ri "" \
+        "s/%%BASE_IMAGE%%/${base}/g; \
+        s/%%PYENV_VERSIONS%%/${available[*]}/g \
+        ${allow_failures_conditional_script}" \
+        "${dir}/Dockerfile"
 done

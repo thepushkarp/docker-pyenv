@@ -58,9 +58,6 @@ RUN set -eux; \
         libffi-dev \
         libgdbm-compat-dev \
         libgdbm-dev \
-        libmpdec-dev \
-        liblzma-dev \
-        libncursesw5-dev \
         $(apt-cache show libncurses-dev >/dev/null 2>&1 && echo libncurses-dev || true) \
         libreadline6-dev \
         libsqlite3-dev \
@@ -78,7 +75,7 @@ RUN set -eux; \
 
 FROM builder AS build-all
 
-ARG PYENV_VERSIONS="3.8.19 3.9.19 3.10.14 3.11.8 3.12.2"
+ARG PYENV_VERSIONS="3.0.1 3.1.5 3.2.6 3.3.7 3.4.10 3.5.10 3.6.15 3.7.17 3.8.19 3.9.19 3.10.14 3.11.8 3.12.2"
 ARG ALLOW_FAILURES=
 
 RUN set -eux; \

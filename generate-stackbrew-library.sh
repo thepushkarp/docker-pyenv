@@ -26,8 +26,8 @@ done
 declare -A aliases
 latest=0
 for major in "${!majors[@]}"; do
-	aliases["${majors[$major]}"]="$major"
-	test $major -le $latest || latest=$major
+    aliases["${majors[$major]}"]="$major"
+    test $major -le $latest || latest=$major
 done
 aliases["${majors[$latest]}"]="$latest latest"
 
@@ -138,8 +138,8 @@ for dir in \
         echo "SharedTags: $(join ', ' "${sharedTags[@]}")"
     fi
     cat <<-EOE
-	Architectures: $(join ', ' $variantArches)
-	GitCommit: $commit
-	Directory: $dir
-	EOE
+    Architectures: $(join ', ' $variantArches)
+    GitCommit: $commit
+    Directory: $dir
+    EOE
 done

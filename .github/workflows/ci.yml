@@ -6,6 +6,8 @@ on:
     branches:
       - main
   workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 0'
 
 defaults:
   run:
@@ -15,12 +17,8 @@ jobs:
   generate-jobs:
     name: Generate Jobs
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        arch: [amd64, arm64v8]
     outputs:
-      strategy_amd64: ${{ steps.generate-jobs.outputs.strategy_amd64 }}
-      strategy_arm64v8: ${{ steps.generate-jobs.outputs.strategy_arm64v8 }}
+      STRATEGY: ${{ steps.generate-jobs.outputs.STRATEGY }}
     steps:
       - uses: actions/checkout@v4
       - id: generate-jobs
@@ -31,72 +29,19 @@ jobs:
           strategy="$(env GITHUB_REPOSITORY=thepushkarp/pyenv ~/bashbrew/scripts/github-actions/generate.sh)"
 
           EOF="EOF-$RANDOM-$RANDOM-$RANDOM"
-          echo "strategy_${{ matrix.arch }}<<$EOF" >> $GITHUB_OUTPUT
+          echo "STRATEGY<<$EOF" >> $GITHUB_OUTPUT
           jq <<<"$strategy" . | tee -a $GITHUB_OUTPUT
           echo "$EOF" >> $GITHUB_OUTPUT
         env:
           BASHBREW_NAMESPACE: thepushkarp
-          BASHBREW_ARCH: ${{ matrix.arch }}
 
   build-and-push-amd64:
     needs: generate-jobs
-    strategy: ${{ fromJson(needs.generate-jobs.outputs.strategy_amd64) }}
-    name: ${{ matrix.name }}-amd64
-    runs-on: 'ubuntu-latest'
+    strategy: ${{ fromJson(needs.generate-jobs.outputs.STRATEGY) }}
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
-      - name: Prepare Environment
-        run: ${{ matrix.runs.prepare }}
-      - name: Pull Dependencies
-        run: ${{ matrix.runs.pull }}
-      - name: Build ${{ matrix.name }}
-        run: ${{ matrix.runs.build }}
-      - name: History ${{ matrix.name }}
-        run: ${{ matrix.runs.history }}
-      - name: Test ${{ matrix.name }}
-        run: ${{ matrix.runs.test }}
-      - name: '"docker images"'
-        run: ${{ matrix.runs.images }}
-      - name: Log in to Docker Hub
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Publish
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-        run: |
-          for tag in $(docker images --filter=reference='thepushkarp/pyenv:*' \
-              --format '{{.Repository}}:{{.Tag}}'); do
-            docker push ${tag};
-          done
-
-  build-and-push-arm64v8:
-    needs: generate-jobs
-    strategy: ${{ fromJson(needs.generate-jobs.outputs.strategy_arm64v8) }}
-    name: ${{ matrix.name }}-arm64v8
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Install Docker
-        run: |
-          brew install docker
-          # The Docker application needs to be started to run the Docker daemon.
-          # This command tries to open Docker.app but does not wait for it to finish.
-          # You may need to handle Docker startup in a more robust way.
-          colima start
-
-      # It might be necessary to wait for Docker to be ready.
-      # This is a simplistic approach; consider a more robust wait/check mechanism.
-      - name: Wait for Docker to start
-        run: |
-          for i in {1..30}; do # wait up to 30 seconds
-            if docker info; then
-              break
-            fi
-            echo "Waiting for Docker to start..."
-            sleep 1
-          done
       - name: Prepare Environment
         run: ${{ matrix.runs.prepare }}
       - name: Pull Dependencies
