@@ -23,24 +23,33 @@ generated_warning() {
 EOF
 }
 
-versions=(
-    $(docker run -it thepushkarp/pyenv sh -c " \
+eol_majors=($(curl -s https://endoflife.date/api/python.json | jq -r '.[] | select(.eol < $date) | .cycle' --arg date "$(date +%Y-%m-%d)" | sort -u -V))
+
+pyenv_majors=($(docker run -it thepushkarp/pyenv sh -c " \
         pyenv update >/dev/null 2>&1; \
-        for prefix in \$(pyenv install --list | \
-            grep -e '^  3\(\.[[:digit:]]\+\)\+$' | \
-            cut -d. -f1,2 | \
-            sort -u -V) \
-        ; do \
-            pyenv latest --known \$prefix; \
-        done | sort -u -V"
+        pyenv install --list | \
+        grep -e '^  3\(\.[[:digit:]]\+\)\+$' | \
+        cut -d. -f1,2 | \
+        sort -u -V"
     )
 )
 
-versions=($(echo "${versions[@]}" | tr -d '\r'))
+pyenv_majors=($(echo "${pyenv_majors[@]}" | tr -d '\r'))
 
-eol_versions=$(curl -s https://endoflife.date/api/python.json | jq -r '.[] | select(.eol < $date) | .cycle' --arg date "$(date +%Y-%m-%d) | sort -u -V")
+majors=()
+for version in "${pyenv_majors[@]}"; do
+    if [[ ! " ${eol_majors[@]} " =~ " ${version} " ]]; then
+        majors+=("$version")
+    fi
+done
 
-# TODO: Remove EOL versions
+versions=(
+    $(for version in "${majors[@]}"; do
+        pyenv latest --known "$version"
+    done | sort -u -V)
+)
+
+echo "Found Python versions: ${versions[*]}"
 
 declare -A blacklisted
 
