@@ -94,4 +94,5 @@ COPY --from=build-all ${PYENV_ROOT}/versions/ ${PYENV_ROOT}/versions/
 RUN set -eux; \
     pyenv rehash; \
     pyenv global $(pyenv versions --bare | tac); \
-    pyenv versions
+    pyenv versions; \
+    pip install --no-cache-dir --upgrade pip setuptools wheel; \
