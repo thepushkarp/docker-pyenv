@@ -1,7 +1,7 @@
 # Docker image with prebuilt pyenv python versions
 
 <div align="center">
-  <img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/thepushkarp/pyenv">
+  <a href="https://hub.docker.com/r/thepushkarp/pyenv"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/thepushkarp/pyenv"></a>
 </div>
 
 ## Tags
