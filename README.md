@@ -1,5 +1,9 @@
 # Docker image with prebuilt pyenv python versions
 
+<div align="center">
+  <img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/thepushkarp/pyenv">
+</div>
+
 ## Tags
 Tags are available in a few formats:
 
