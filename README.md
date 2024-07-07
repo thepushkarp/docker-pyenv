@@ -12,8 +12,6 @@ Tags are available in a few formats:
 Versions can be `3`, `3.12`, `3.12.1`, etc, and current supported variants are:
 
 - `alpine`: based on `alpine`, [Dockerfile](https://github.com/thepushkarp/docker-pyenv/blob/main/alpine/Dockerfile)
-- `buster`: based on `buildpack-deps:buster`, [Dockerfile](https://github.com/thepushkarp/docker-pyenv/blob/main/buster/Dockerfile)
-- `slim-buster`: based on `debian:buster-slim`, [Dockerfile](https://github.com/thepushkarp/docker-pyenv/blob/main/buster/slim/Dockerfile)
 - `bullseye`: based on `buildpack-deps:bullseye`, [Dockerfile](https://github.com/thepushkarp/docker-pyenv/blob/main/bullseye/Dockerfile)
 - `slim-bullseye`: based on `debian:bullseye-slim`, [Dockerfile](https://github.com/thepushkarp/docker-pyenv/blob/main/bullseye/slim/Dockerfile)
 - `bookworm`: based on `buildpack-deps:bookworm`, [Dockerfile](https://github.com/thepushkarp/docker-pyenv/blob/main/bookworm/Dockerfile)

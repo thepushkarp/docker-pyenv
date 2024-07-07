@@ -54,7 +54,7 @@ echo "Found Python versions: ${versions[*]}"
 declare -A blacklisted
 
 for dir in \
-    alpine {buster,bullseye,bookworm,focal,jammy}{/slim,} \
+    alpine {bullseye,bookworm,focal,jammy}{/slim,} \
 ; do
     variant="$(basename "$dir")"
 
